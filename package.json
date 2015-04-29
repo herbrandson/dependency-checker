@@ -1,0 +1,14 @@
+{
+  "name": "dependency-checker",
+  "version": "0.0.1",
+  "description": "Verify required NPM and Bower packages are installed and on a valid version",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "Eric Herbrandson",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "semver": "^4.3.3"
+  }
+}
