@@ -1,8 +1,9 @@
 {
   "name": "dependency-checker",
   "version": "0.0.1",
-  "description": "Verify required NPM and Bower packages are installed and on a valid version",
+  "description": "Verify required npm and bower packages are installed and on a valid version",
   "main": "index.js",
+  "bin": "./run.js",
   "scripts": {
   },
   "author": "Eric Herbrandson",
