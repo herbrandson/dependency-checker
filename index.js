@@ -57,21 +57,7 @@ var self = {
 			.then(function(data) {
 				var installed = {};
 				data.forEach(function(directory) {
-					var packagePath = path.join(root, directory, '.' + package);
-
-					// try path option 1
-					if (!fs.existsSync(packagePath)) {
-
-						// try path option 2
-						packagePath = path.join(root, directory, package);
-						if (!fs.existsSync(packagePath)) {
-							return;
-						}
-					}
-
-					var packageData = fs.readFileSync(packagePath);
-					var packageJson = JSON.parse(packageData);
-					installed[packageJson.name] = packageJson.version || '*';
+					installed[directory] = _getPackageVersion(root, directory, package);
 				});
 
 				return installed;
@@ -121,12 +107,39 @@ var self = {
 	},
 };
 
+
+function _getPackageVersion(root, directory, package) {
+	var packagePath = path.join(root, directory, '.' + package);
+	var result = _getPackageVersionFromFile(packagePath);
+	if (result !== false) return result;
+
+	packagePath = path.join(root, directory, package);
+	result = _getPackageVersionFromFile(packagePath);
+	if (result !== false) return result;
+
+	return '*';
+}
+
+function _getPackageVersionFromFile(packagePath) {
+	if (!fs.existsSync(packagePath)) {
+		return false;
+	}
+
+	var packageData = fs.readFileSync(packagePath);
+	var packageJson = JSON.parse(packageData);
+	return packageJson.version || false;
+}
+
 function _isValid(requestedVersion, actualVersion) {
 	var split = requestedVersion.split('#');
 	var hash = split[split.length - 1];
 
 	if (_isRepo(requestedVersion) && !semver.clean(hash)) {
 		return !!actualVersion;
+	}
+
+	if (actualVersion === '*') {
+		return true;
 	}
 
 	return semver.satisfies(actualVersion, hash);
